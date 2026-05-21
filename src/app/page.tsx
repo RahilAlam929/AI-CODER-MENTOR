@@ -35,9 +35,9 @@ export default function Home() {
 
   const navigationItems = [
     { id: "chat", label: "AI Chat Assistant", icon: "💬" },
-    { id: "projects", label: "Project Engine", icon: "🛠️" },
-    { id: "research", label: "Research Sync", icon: "🔬", disabled: true },
-    { id: "pipeline", label: "Placement Prep", icon: "🚀", disabled: true },
+    { id: "projects", label: "Project Engine", icon: "" },
+    { id: "research", label: "Research Sync", icon: "", disabled: true },
+    { id: "pipeline", label: "Placement Prep", icon: "", disabled: true },
   ] as const;
 
   return (
@@ -55,7 +55,7 @@ export default function Home() {
           </div>
         </div>
 
-        
+       
         <div className="flex items-center gap-2 rounded-xl bg-slate-900/60 p-1.5 border border-slate-800/80">
           <span className="text-[11px] font-medium tracking-wide text-slate-400 uppercase px-2 font-mono">Branch Context</span>
           <select
@@ -118,17 +118,22 @@ export default function Home() {
 
 
 function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "system-init",
-      sender: "engine",
-      content: `System pipeline initialized. Awaiting queries concerning mathematical validations, computational setups, or standard practices inside the domain of ${branch}.`,
-      epoch: Date.now(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputVal, setInputVal] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
+
+  
+  useEffect(() => {
+    setMessages([
+      {
+        id: "system-init",
+        sender: "engine",
+        content: `System pipeline initialized. Awaiting queries concerning mathematical validations, computational setups, or standard practices inside the domain of ${branch}.`,
+        epoch: Date.now(),
+      },
+    ]);
+  }, [branch]);
 
   const scrollToAnchor = () => {
     if (viewportRef.current) {
@@ -139,6 +144,81 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
   useEffect(() => {
     scrollToAnchor();
   }, [messages, isProcessing]);
+
+  // Dynamically generates context-aware engineering responses in English
+  const getDynamicResponse = (query: string, currentBranch: EngineeringBranch): string => {
+    const q = query.toLowerCase();
+    
+    // ==========================================
+    // COMPUTER SCIENCE BRANCH LOGIC
+    // ==========================================
+    if (currentBranch === "Computer Science") {
+      if (q.includes("hi") || q.includes("hello")) {
+        return "Hello Engineer! Computer Science core operational. Ready to assist you with Algorithms, System Architecture, Database Optimization, or Web Development.";
+      }
+      
+      if (q.includes("website") || q.includes("web dev") || q.includes("develop")) {
+        return `🌐 To develop a modern website, you need to focus on three core layers:\n\n` +
+               `1. Frontend (User Interface): Build the visual layer using HTML, CSS, and JavaScript. For production, modern frameworks like Next.js, React, or Vue are highly recommended.\n` +
+               `2. Backend (Server Logic): Handle authentication, APIs, and business logic using environments like Node.js (Express), Python (Django/FastAPI), or Java (Spring Boot).\n` +
+               `3. Database (Data Persistence): Store your application data securely using Relational systems (PostgreSQL, MySQL) or Document-based NoSQL systems (MongoDB).\n\n` +
+               `To spin up a modern full-stack project instantly, you can initialize a repository using: 'npx create-next-app@latest'. Which layer would you like to explore first?`;
+      }
+
+      if (q.includes("database") || q.includes("sql") || q.includes("mongo")) {
+        return `💾 Database Management System (DBMS) Core:\n\n` +
+               `- Use Relational Databases (SQL like PostgreSQL, MySQL) if your data structures are highly organized and require strict ACID compliance or complex relational queries.\n` +
+               `- Use Non-Relational Databases (NoSQL like MongoDB, Redis) if you are handling unstructured data, horizontal scaling, or rapid prototyping.\n\n` +
+               `Are you looking to optimize a specific query execution plan, or are you designing a new schema architecture?`;
+      }
+
+      if (q.includes("code") || q.includes("bug") || q.includes("error")) {
+        return `💻 Code Debugging Subsystem Active: Please paste your code snippet or error logs directly into the terminal interface. I will analyze the runtime behavior, catch syntax breaks, and optimize the Big-O time complexity.`;
+      }
+      
+      return `Telemetry parsed for [Computer Science]. Analyzed your query regarding technical implementation. Standard paradigm advises optimizing resource allocation grids and reviewing runtime complexities. Provide a specific sub-topic (e.g., Web Development, Databases, or Algorithms) to stream native solutions.`;
+    }
+    
+    
+    if (currentBranch === "Chemical") {
+      if (q.includes("hi") || q.includes("hello")) {
+        return "System Node active. Chemical Engineering engine online. Ready to analyze Mass Transfer, Thermodynamics, or Process Simulation data.";
+      }
+      if (q.includes("reactor") || q.includes("design")) {
+        return "🧪 Reactor Design Module: Continuous Stirred-Tank Reactor (CSTR) and Plug Flow Reactor (PFR) kinetics calculation engine online. Please supply your space velocity, conversion targets, and activation energy constants.";
+      }
+      return `Telemetry parsed for [Chemical Engineering]. Reactor models and fluid dynamics simulated against core standards. For live empirical analysis and precise chemical stoichiometry formulas, interface your LLM server endpoint.`;
+    }
+
+    
+    if (currentBranch === "Mechanical") {
+      if (q.includes("hi") || q.includes("hello")) {
+        return "Mechanical Systems Engine activated. Prepared to assist with CAD modeling specs, Finite Element Analysis (FEA), or Fluid Dynamics.";
+      }
+      if (q.includes("cad") || q.includes("design") || q.includes("3d")) {
+        return "🛠️ Mechanical Design Active: Ensure to calculate proper tolerances, stress concentrations, and material selections (e.g., Anodized Aluminum 6061 vs. Structural Steel) when mapping out 3D models in CAD platforms.";
+      }
+      return `Telemetry parsed for [Mechanical Engineering]. Stress matrices and kinematic loops checked against industry baselines. Connect your production API gateway to parse specific mechanical stress loads.`;
+    }
+
+    
+    if (currentBranch === "Electrical") {
+      if (q.includes("hi") || q.includes("hello")) {
+        return "Electrical Infrastructure Node live. Ready to compute Signal Processing algorithms, Power Systems telemetry, or Circuit Simulation validations.";
+      }
+      return `Telemetry parsed for [Electrical Engineering]. Voltage profiles, impedance matches, and signal-to-noise configurations verified. Replace this sandbox handler with live backend nodes to process real-time wave telemetry.`;
+    }
+
+    
+    if (currentBranch === "Civil") {
+      if (q.includes("hi") || q.includes("hello")) {
+        return "Civil Engineering core module online. Standing by for Structural Analysis metrics, Geotechnical parameters, or Concrete mixture design validations.";
+      }
+      return `Telemetry parsed for [Civil Engineering]. Load distribution vectors and structural safety margins simulated against default codes. Interface your custom API backend to stream production layout blueprints.`;
+    }
+
+    return `Parsed telemetry for [${currentBranch}]. Parameters verified against core engineering protocols.`;
+  };
 
   const dispatchQuery = async (e: FormEvent) => {
     e.preventDefault();
@@ -155,26 +235,28 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
     setIsProcessing(true);
 
     try {
-      await new Promise((res) => setTimeout(res, 1400));
+      await new Promise((res) => setTimeout(res, 1000));
+      const smartResponse = getDynamicResponse(queryPayload, branch);
       
       setMessages((prev) => [
         ...prev,
         {
           id: crypto.randomUUID(),
           sender: "engine",
-          content: `Parsed engineering telemetry for [${branch}]. The parameters have been checked against core standards. Connect your backend API gateway to replace this structural block with native token stream generations.`,
+          content: smartResponse,
           epoch: Date.now(),
         },
       ]);
     } catch (err) {
       console.error("Pipeline breakdown:", err);
-    } finaly {
+    } finally {
       setIsProcessing(false);
     }
   };
 
   return (
     <div className="flex flex-col flex-1 h-[calc(100vh-65px)]">
+      {/* Scrollable Feed */}
       <div ref={viewportRef} className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
         <div className="max-w-3xl mx-auto space-y-6">
           {messages.map((msg) => (
@@ -216,6 +298,7 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
         </div>
       </div>
 
+      
       <div className="p-4 border-t border-slate-800/60 bg-slate-950/80 backdrop-blur-sm">
         <form onSubmit={dispatchQuery} className="max-w-3xl mx-auto flex gap-2.5">
           <input
@@ -279,6 +362,7 @@ function ProjectEngineModule({ branch }: { branch: EngineeringBranch }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+       
         <form onSubmit={triggerSynthesis} className="bg-slate-900/40 border border-slate-900 p-5 rounded-xl space-y-4 lg:col-span-2 shadow-sm">
           <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">Parameters Blueprint</h3>
           
@@ -338,6 +422,7 @@ function ProjectEngineModule({ branch }: { branch: EngineeringBranch }) {
           </button>
         </form>
 
+        
         <div className="lg:col-span-3 min-h-[320px] flex flex-col">
           {compiledBlueprint ? (
             <div className="bg-slate-900/30 border border-slate-900 rounded-xl p-5 space-y-4 animate-fade-in">
@@ -366,7 +451,7 @@ function ProjectEngineModule({ branch }: { branch: EngineeringBranch }) {
               </div>
 
               <div className="space-y-1">
-                <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">Schematic Layout Suggestion</h4>
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">Dynamic Layout Breakdown</h4>
                 <div className="bg-slate-950 p-3.5 rounded-lg border border-slate-900 font-mono text-xs text-slate-300 leading-relaxed">
                   {compiledBlueprint.schematicBreakdown}
                 </div>
