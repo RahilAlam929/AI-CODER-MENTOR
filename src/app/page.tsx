@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, FormEvent } from "react";
-
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
 
 export type EngineeringBranch = 
   | "Computer Science" 
@@ -34,85 +35,55 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("chat");
 
   const navigationItems = [
-    { id: "chat", label: "AI Chat Assistant", icon: "💬" },
-    { id: "projects", label: "Project Engine", icon: "" },
+    { id: "chat", label: "AI Chat Assistant", icon: "", disabled: false },
+    { id: "projects", label: "Project Engine", icon: "", disabled: false },
     { id: "research", label: "Research Sync", icon: "", disabled: true },
     { id: "pipeline", label: "Placement Prep", icon: "", disabled: true },
-  ] as const;
+  ];
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-50 flex flex-col antialiased selection:bg-blue-500/30">
-      
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-800/80 bg-slate-950/70 px-6 py-3.5 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 font-mono text-base font-black tracking-tighter text-white shadow-lg shadow-blue-500/20">
-            Σ
-          </div>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight text-slate-100">
-              EngineerOS <span className="font-mono text-xs font-medium text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20 ml-1">v1.0.0-MVP</span>
-            </h1>
-          </div>
+    <>
+      <Navbar />
+      <HeroSection />
+      <main className="min-h-screen bg-slate-950 text-slate-50 flex flex-col antialiased selection:bg-blue-500/30">
+        <div className="flex-1 flex flex-col md:flex-row">
+          <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-800/60 glass-card p-4 space-y-1 shadow-premium animate-fade-in-up">
+            <p className="text-[10px] font-bold text-slate-500 tracking-wider uppercase px-3 mb-2 font-mono">
+              Ecosystem Core
+            </p>
+            <nav className="space-y-1">
+              {navigationItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => !item.disabled && setActiveTab(item.id as WorkspaceTab)}
+                  disabled={item.disabled}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium tracking-wide transition-all glass-card shadow-premium hover:scale-[1.025] hover:shadow-lg focus:scale-[1.03] focus:shadow-xl ${
+                    activeTab === item.id && !item.disabled
+                      ? "bg-gradient-to-r from-[#23233b] to-[#18181b] text-blue-400 border border-blue-500/30 neon-text"
+                      : "text-slate-400 hover:text-white border border-transparent"
+                  } ${item.disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm scale-110">{item.icon}</span>
+                    {item.label}
+                  </div>
+                  {item.disabled && (
+                    <span className="text-[9px] font-mono tracking-widest text-slate-600 uppercase border border-slate-800 bg-slate-900 px-1.5 py-0.5 rounded">
+                      Lock
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </aside>
+
+          <main className="flex-1 bg-slate-950 flex flex-col relative animate-fade-in-up">
+            {activeTab === "chat" && <ChatAssistantModule branch={currentBranch} />}
+            {activeTab === "projects" && <ProjectEngineModule branch={currentBranch} />}
+          </main>
         </div>
-
-       
-        <div className="flex items-center gap-2 rounded-xl bg-slate-900/60 p-1.5 border border-slate-800/80">
-          <span className="text-[11px] font-medium tracking-wide text-slate-400 uppercase px-2 font-mono">Branch Context</span>
-          <select
-            value={currentBranch}
-            onChange={(e) => setCurrentBranch(e.target.value as EngineeringBranch)}
-            className="bg-slate-950 text-xs font-medium text-slate-200 border border-slate-800 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-blue-500 transition-colors cursor-pointer"
-          >
-            <option value="Computer Science">Computer Science & Eng</option>
-            <option value="Mechanical">Mechanical Engineering</option>
-            <option value="Electrical">Electrical Engineering</option>
-            <option value="Civil">Civil Engineering</option>
-            <option value="Chemical">Chemical Engineering</option>
-          </select>
-        </div>
-      </header>
-
-     
-      <div className="flex-1 flex flex-col md:flex-row">
-        
-        
-        <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-800/60 bg-slate-950/40 p-4 space-y-1">
-          <p className="text-[10px] font-bold text-slate-500 tracking-wider uppercase px-3 mb-2 font-mono">
-            Ecosystem Core
-          </p>
-          <nav className="space-y-1">
-            {navigationItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => !item.disabled && setActiveTab(item.id)}
-                disabled={item.disabled}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium tracking-wide transition-all ${
-                  activeTab === item.id && !item.disabled
-                    ? "bg-gradient-to-r from-blue-600/10 to-indigo-600/5 text-blue-400 border border-blue-500/20 shadow-sm"
-                    : "text-slate-400 hover:bg-slate-900/60 hover:text-slate-200 border border-transparent"
-                } ${item.disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-sm scale-110">{item.icon}</span>
-                  {item.label}
-                </div>
-                {item.disabled && (
-                  <span className="text-[9px] font-mono tracking-widest text-slate-600 uppercase border border-slate-800 bg-slate-900 px-1.5 py-0.5 rounded">
-                    Lock
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </aside>
-
-        
-        <main className="flex-1 bg-slate-950 flex flex-col relative">
-          {activeTab === "chat" && <ChatAssistantModule branch={currentBranch} />}
-          {activeTab === "projects" && <ProjectEngineModule branch={currentBranch} />}
-        </main>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
 
@@ -121,9 +92,9 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputVal, setInputVal] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [assistantMessageId, setAssistantMessageId] = useState<string | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
-  
   useEffect(() => {
     setMessages([
       {
@@ -133,6 +104,7 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
         epoch: Date.now(),
       },
     ]);
+    setAssistantMessageId(null);
   }, [branch]);
 
   const scrollToAnchor = () => {
@@ -144,81 +116,6 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
   useEffect(() => {
     scrollToAnchor();
   }, [messages, isProcessing]);
-
-  // Dynamically generates context-aware engineering responses in English
-  const getDynamicResponse = (query: string, currentBranch: EngineeringBranch): string => {
-    const q = query.toLowerCase();
-    
-    // ==========================================
-    // COMPUTER SCIENCE BRANCH LOGIC
-    // ==========================================
-    if (currentBranch === "Computer Science") {
-      if (q.includes("hi") || q.includes("hello")) {
-        return "Hello Engineer! Computer Science core operational. Ready to assist you with Algorithms, System Architecture, Database Optimization, or Web Development.";
-      }
-      
-      if (q.includes("website") || q.includes("web dev") || q.includes("develop")) {
-        return `🌐 To develop a modern website, you need to focus on three core layers:\n\n` +
-               `1. Frontend (User Interface): Build the visual layer using HTML, CSS, and JavaScript. For production, modern frameworks like Next.js, React, or Vue are highly recommended.\n` +
-               `2. Backend (Server Logic): Handle authentication, APIs, and business logic using environments like Node.js (Express), Python (Django/FastAPI), or Java (Spring Boot).\n` +
-               `3. Database (Data Persistence): Store your application data securely using Relational systems (PostgreSQL, MySQL) or Document-based NoSQL systems (MongoDB).\n\n` +
-               `To spin up a modern full-stack project instantly, you can initialize a repository using: 'npx create-next-app@latest'. Which layer would you like to explore first?`;
-      }
-
-      if (q.includes("database") || q.includes("sql") || q.includes("mongo")) {
-        return `💾 Database Management System (DBMS) Core:\n\n` +
-               `- Use Relational Databases (SQL like PostgreSQL, MySQL) if your data structures are highly organized and require strict ACID compliance or complex relational queries.\n` +
-               `- Use Non-Relational Databases (NoSQL like MongoDB, Redis) if you are handling unstructured data, horizontal scaling, or rapid prototyping.\n\n` +
-               `Are you looking to optimize a specific query execution plan, or are you designing a new schema architecture?`;
-      }
-
-      if (q.includes("code") || q.includes("bug") || q.includes("error")) {
-        return `💻 Code Debugging Subsystem Active: Please paste your code snippet or error logs directly into the terminal interface. I will analyze the runtime behavior, catch syntax breaks, and optimize the Big-O time complexity.`;
-      }
-      
-      return `Telemetry parsed for [Computer Science]. Analyzed your query regarding technical implementation. Standard paradigm advises optimizing resource allocation grids and reviewing runtime complexities. Provide a specific sub-topic (e.g., Web Development, Databases, or Algorithms) to stream native solutions.`;
-    }
-    
-    
-    if (currentBranch === "Chemical") {
-      if (q.includes("hi") || q.includes("hello")) {
-        return "System Node active. Chemical Engineering engine online. Ready to analyze Mass Transfer, Thermodynamics, or Process Simulation data.";
-      }
-      if (q.includes("reactor") || q.includes("design")) {
-        return "🧪 Reactor Design Module: Continuous Stirred-Tank Reactor (CSTR) and Plug Flow Reactor (PFR) kinetics calculation engine online. Please supply your space velocity, conversion targets, and activation energy constants.";
-      }
-      return `Telemetry parsed for [Chemical Engineering]. Reactor models and fluid dynamics simulated against core standards. For live empirical analysis and precise chemical stoichiometry formulas, interface your LLM server endpoint.`;
-    }
-
-    
-    if (currentBranch === "Mechanical") {
-      if (q.includes("hi") || q.includes("hello")) {
-        return "Mechanical Systems Engine activated. Prepared to assist with CAD modeling specs, Finite Element Analysis (FEA), or Fluid Dynamics.";
-      }
-      if (q.includes("cad") || q.includes("design") || q.includes("3d")) {
-        return "🛠️ Mechanical Design Active: Ensure to calculate proper tolerances, stress concentrations, and material selections (e.g., Anodized Aluminum 6061 vs. Structural Steel) when mapping out 3D models in CAD platforms.";
-      }
-      return `Telemetry parsed for [Mechanical Engineering]. Stress matrices and kinematic loops checked against industry baselines. Connect your production API gateway to parse specific mechanical stress loads.`;
-    }
-
-    
-    if (currentBranch === "Electrical") {
-      if (q.includes("hi") || q.includes("hello")) {
-        return "Electrical Infrastructure Node live. Ready to compute Signal Processing algorithms, Power Systems telemetry, or Circuit Simulation validations.";
-      }
-      return `Telemetry parsed for [Electrical Engineering]. Voltage profiles, impedance matches, and signal-to-noise configurations verified. Replace this sandbox handler with live backend nodes to process real-time wave telemetry.`;
-    }
-
-    
-    if (currentBranch === "Civil") {
-      if (q.includes("hi") || q.includes("hello")) {
-        return "Civil Engineering core module online. Standing by for Structural Analysis metrics, Geotechnical parameters, or Concrete mixture design validations.";
-      }
-      return `Telemetry parsed for [Civil Engineering]. Load distribution vectors and structural safety margins simulated against default codes. Interface your custom API backend to stream production layout blueprints.`;
-    }
-
-    return `Parsed telemetry for [${currentBranch}]. Parameters verified against core engineering protocols.`;
-  };
 
   const dispatchQuery = async (e: FormEvent) => {
     e.preventDefault();
@@ -233,30 +130,70 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
     ]);
     
     setIsProcessing(true);
+    const newAssistantMessageId = crypto.randomUUID();
+    setAssistantMessageId(newAssistantMessageId);
 
     try {
-      await new Promise((res) => setTimeout(res, 1000));
-      const smartResponse = getDynamicResponse(queryPayload, branch);
-      
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: queryPayload, branch: branch }),
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error(`Server status: ${response.status}`);
+      }
+
       setMessages((prev) => [
         ...prev,
         {
-          id: crypto.randomUUID(),
+          id: newAssistantMessageId,
           sender: "engine",
-          content: smartResponse,
+          content: "",
           epoch: Date.now(),
         },
       ]);
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedText = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        accumulatedText += decoder.decode(value, { stream: true });
+
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === newAssistantMessageId
+              ? { ...msg, content: accumulatedText }
+              : msg
+          )
+        );
+      }
     } catch (err) {
-      console.error("Pipeline breakdown:", err);
+      console.error(err);
+      setMessages((prev) => {
+        const filtered = prev.filter((msg) => msg.id !== newAssistantMessageId);
+        return [
+          ...filtered,
+          {
+            id: crypto.randomUUID(),
+            sender: "engine",
+            content: "🚨 Connection error: Unable to communicate with the engineering backend infrastructure.",
+            epoch: Date.now(),
+          },
+        ];
+      });
     } finally {
       setIsProcessing(false);
+      setAssistantMessageId(null);
     }
   };
 
   return (
     <div className="flex flex-col flex-1 h-[calc(100vh-65px)]">
-      {/* Scrollable Feed */}
       <div ref={viewportRef} className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
         <div className="max-w-3xl mx-auto space-y-6">
           {messages.map((msg) => (
@@ -285,7 +222,7 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
             </div>
           ))}
 
-          {isProcessing && (
+          {isProcessing && assistantMessageId && !messages.find(m => m.id === assistantMessageId)?.content && (
             <div className="flex items-center gap-3 text-xs font-mono text-slate-500 bg-slate-900/30 border border-slate-900 px-4 py-3 rounded-xl w-fit animate-pulse">
               <div className="flex gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" />
@@ -298,7 +235,6 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
         </div>
       </div>
 
-      
       <div className="p-4 border-t border-slate-800/60 bg-slate-950/80 backdrop-blur-sm">
         <form onSubmit={dispatchQuery} className="max-w-3xl mx-auto flex gap-2.5">
           <input
@@ -320,7 +256,6 @@ function ChatAssistantModule({ branch }: { branch: EngineeringBranch }) {
     </div>
   );
 }
-
 
 function ProjectEngineModule({ branch }: { branch: EngineeringBranch }) {
   const [subDomain, setSubDomain] = useState("");
@@ -346,7 +281,7 @@ function ProjectEngineModule({ branch }: { branch: EngineeringBranch }) {
         stackModules: ["FastAPI Engine", "TypeScript Native", "PostgreSQL Storage", "Docker Cluster"]
       });
     } catch (err) {
-      console.error("Synthesis aborted:", err);
+      console.error(err);
     } finally {
       setIsCompiling(false);
     }
@@ -362,7 +297,6 @@ function ProjectEngineModule({ branch }: { branch: EngineeringBranch }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
-       
         <form onSubmit={triggerSynthesis} className="bg-slate-900/40 border border-slate-900 p-5 rounded-xl space-y-4 lg:col-span-2 shadow-sm">
           <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">Parameters Blueprint</h3>
           
@@ -422,7 +356,6 @@ function ProjectEngineModule({ branch }: { branch: EngineeringBranch }) {
           </button>
         </form>
 
-        
         <div className="lg:col-span-3 min-h-[320px] flex flex-col">
           {compiledBlueprint ? (
             <div className="bg-slate-900/30 border border-slate-900 rounded-xl p-5 space-y-4 animate-fade-in">
